@@ -1,0 +1,19 @@
+
+omdbapi data
+http://www.omdbapi.com/?apikey=[yourkey]&
+
+poster
+http://img.omdbapi.com/?apikey=[yourkey]&
+
+bands in town api documention page
+https://app.swaggerhub.com/apis-docs/Bandsintown/PublicAPI/3.0.0
+
+Spotify:
+https://www.npmjs.com/package/node-spotify-api
+
+Axios:
+https://www.npmjs.com/package/axios
+
+Bandsintown:
+http://www.artists.bandsintown.com/bandsintown-api
+https://app.swaggerhub.com/apis-docs/Bandsintown/PublicAPI/3.0.0
