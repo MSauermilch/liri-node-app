@@ -1,43 +1,52 @@
 
-console.log("Radio Check")
-console.log("Hello, Over!")
+console.log(" \n Hi! Welcome to Liri. Search For Music, Concerts, and Movies. \n To search simply type 'song', 'concert', or 'movie' followed by what your looking for. \n Party On! \n");
 
 var axios = require ("axios");
-var Spotify = require('node-spotify-api');
+var Spotify = require("node-spotify-api");
+var moment = require("moment");
 
     // var spotify = new spotify(keys.spotify);
-    //var bands in town
 
     //others
       // require("dotenv").config();
       // var keys = require("./keys.js");
 
-var expression = process.argv[2];   //switch
-var mediaSubject = process.argv[3];   //concert, song, movie
-console.log("Your looking for: " + mediaSubject)
+var expression = process.argv[2];   //Search song, concert. or movie
+var mediaSubject = "";  //Search subject
+var nodeArgs = process.argv;    // creates a string to use if search subject is longer than one word.
 
-// var nodeArgs = process.argv;    // is an array.....?! will need to be moved to argv4, agrv 3 will deseziate an apit bands/spot/omdb
-// var movieName = "";
-//   for (var i = 3; i < nodeArgs.length; i++) {
-//     if (i > 2 && i < nodeArgs.length) {
-//       movieName = movieName + "+" + nodeArgs[i];
-//     }
-//     else {
-//       movieName += nodeArgs[i];
-//     }
-//   }
+  for (var i = 3; i < nodeArgs.length; i++) {
+    if (i > 2 && i < nodeArgs.length) {
+      mediaSubject = mediaSubject + " " + nodeArgs[i];
+      mediaSubject.trim();
+    }
+    else {
+      mediaSubject += nodeArgs[i];
+    }
+  }
 
-// console.log("line29; Movie Name:" + movieName);
-
-//Spotify
+//Bands In Town
 //-----------------------------------------------------------------------
 
 function bandsInTown(mediaSubject){
 
+  console.log("Your looking for: " + mediaSubject + "\n")
+
   var queryUrl = "https://rest.bandsintown.com/artists/" + mediaSubject + "/events?app_id=codingbootcamp";
 
     axios.get(queryUrl).then(
-      console.log(response);
+      function (response){
+
+        if (response.data === null){
+            console.log("Sorry, No results...")// not working
+          } else {
+            for (i=0; i<response.data.length; i++){
+              console.log("Venue: \n" + response.data[i].venue.name);
+              console.log("Loctation: \n" + response.data[i].venue.city + ", " + response.data[i].venue.country);
+              console.log("Date: \n" + response.data[i].datetime + "\n"); // need to use moment.js
+              }
+          }
+        }
     );
 };
 
@@ -59,7 +68,9 @@ function spotify(mediaSearch){
 
 function omdb(mediaSubject){
 
-  if (mediaSubject === ""){  //does not work
+  console.log("Your looking for: " + mediaSubject + "\n")
+
+  if (mediaSubject === undefined){  //does not work
       var mediaSubject = "Mr. Nobody";
       console.log("mr. Nobody");
   };
@@ -80,20 +91,19 @@ function omdb(mediaSubject){
     );
 };
 
-
 //Switch
 //-----------------------------------------------------------------------
 
 switch (expression) {
-        case "spotify":
+        case "song":
           spotify(mediaSubject);
           break;
-        case "omdb":
+        case "movie":
           omdb(mediaSubject);
           break;
         case "concerts":
           bandsInTown(mediaSubject);
           break;
         default:
-          console.log("no es bueno")
+          console.log("NO ES BUENO!")
 };
