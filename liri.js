@@ -1,36 +1,38 @@
 
-console.log(" \n Hi! Welcome to Liri. Search For Music, Concerts, and Movies. \n To search simply type 'song', 'concert', or 'movie' followed by what your looking for. \n Party On! \n");
 
 var axios = require ("axios");
 var Spotify = require("node-spotify-api");
 var moment = require("moment");
 
-    // var spotify = new spotify(keys.spotify);
+var spotify = new Spotify({
+  id: "238f23359ac4479fb1724ab3184f120e",
+  secret: "23b34a56849c4357b7df436616a4c2b2"
+});
 
     //others
       // require("dotenv").config();
       // var keys = require("./keys.js");
 
 var expression = process.argv[2];   //Search song, concert. or movie
-var mediaSubject = "";  //Search subject
+//var mediaSubject = process.argv[3];  //Search subject
+
+var mediaSubject = "";
 var nodeArgs = process.argv;    // creates a string to use if search subject is longer than one word.
 
-  for (var i = 3; i < nodeArgs.length; i++) {
-    if (i > 2 && i < nodeArgs.length) {
-      mediaSubject = mediaSubject + " " + nodeArgs[i];
-      mediaSubject.trim();
-    }
-    else {
-      mediaSubject += nodeArgs[i];
-    }
+for (var i = 3; i < nodeArgs.length; i++) {
+  if (i > 2 && i < nodeArgs.length) {
+    mediaSubject = mediaSubject + " " + nodeArgs[i];
+    mediaSubject.trim();
   }
+  else {
+    mediaSubject += nodeArgs[i];
+  }
+}
 
 //Bands In Town
 //-----------------------------------------------------------------------
 
 function bandsInTown(mediaSubject){
-
-  console.log("Your looking for: " + mediaSubject + "\n")
 
   var queryUrl = "https://rest.bandsintown.com/artists/" + mediaSubject + "/events?app_id=codingbootcamp";
 
@@ -43,7 +45,7 @@ function bandsInTown(mediaSubject){
             for (i=0; i<response.data.length; i++){
               console.log("Venue: \n" + response.data[i].venue.name);
               console.log("Loctation: \n" + response.data[i].venue.city + ", " + response.data[i].venue.country);
-              console.log("Date: \n" + response.data[i].datetime + "\n"); // need to use moment.js
+              console.log("Date: \n" + moment(response.data[i].datetime).format("L") + "\n"); // need to use moment.js
               }
           }
         }
@@ -53,13 +55,17 @@ function bandsInTown(mediaSubject){
 //Spotify
 //-----------------------------------------------------------------------
 
-function spotify(mediaSearch){
-  spotify.search({ type: 'track', query: mediaSubject }, function(err, data) {
+function spotiftySearch(mediaSubject) {
+
+  spotify.search({ type: 'track', query: mediaSubject, limit: 1 }, function(err, data) {
     if (err) {
       return console.log('Error occurred: ' + err);
     }
   
-  console.log(data); 
+  console.log("Artist(s): " + data.tracks.items[0].album.artists[0].name);
+  console.log("Song: " + data.tracks.items[0].name);
+  console.log("Link: " + data.tracks.items[0].external_urls.spotify);
+  console.log("Album: " + data.tracks.items[0].album.name);
   });
 };
 
@@ -68,9 +74,7 @@ function spotify(mediaSearch){
 
 function omdb(mediaSubject){
 
-  console.log("Your looking for: " + mediaSubject + "\n")
-
-  if (mediaSubject === undefined){  //does not work
+  if (mediaSubject === undefined){ 
       var mediaSubject = "Mr. Nobody";
       console.log("mr. Nobody");
   };
@@ -79,6 +83,7 @@ function omdb(mediaSubject){
 
     axios.get(queryUrl).then(
       function(response) {
+        console.log("\n");
         console.log("Title: " + response.data.Title);
         console.log("Year: " + response.data.Year)
         console.log("IMDB Rating: " + response.data.imdbRating);
@@ -96,14 +101,16 @@ function omdb(mediaSubject){
 
 switch (expression) {
         case "song":
-          spotify(mediaSubject);
+          spotiftySearch(mediaSubject);
           break;
         case "movie":
           omdb(mediaSubject);
           break;
-        case "concerts":
+        case "concert":
           bandsInTown(mediaSubject);
           break;
         default:
-          console.log("NO ES BUENO!")
+          console.log("\n Hi! Welcome to Liri. Search for music, concerts, and movies.");
+          console.log("To search simply type 'song', 'concert', or 'movie' followed by what your are looking for.");
+          console.log("Party On!");
 };
