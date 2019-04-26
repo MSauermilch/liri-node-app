@@ -1,20 +1,20 @@
+//dotenv to import .env providing spotify keysnode liri
+require("dotenv").config();
 
+//dependences 
+//-----------------------------------------------------------------------
 
 var axios = require ("axios");
 var Spotify = require("node-spotify-api");
+var keys =require("./keys.js")
+var fs = require("fs");
 var moment = require("moment");
+var spotify = new Spotify(keys.spotify);
 
-var spotify = new Spotify({
-  id: "238f23359ac4479fb1724ab3184f120e",
-  secret: "23b34a56849c4357b7df436616a4c2b2"
-});
+//node search logic
+//-----------------------------------------------------------------------
 
-    //others
-      // require("dotenv").config();
-      // var keys = require("./keys.js");
-
-var expression = process.argv[2];   //Search song, concert. or movie
-//var mediaSubject = process.argv[3];  //Search subject
+var expression = process.argv[2];   //Search song, concert, or movie
 
 var mediaSubject = "";
 var nodeArgs = process.argv;    // creates a string to use if search subject is longer than one word.
@@ -39,15 +39,17 @@ function bandsInTown(mediaSubject){
     axios.get(queryUrl).then(
       function (response){
 
-        if (response.data === null){
-            console.log("Sorry, No results...")// not working
-          } else {
-            for (i=0; i<response.data.length; i++){
-              console.log("Venue: \n" + response.data[i].venue.name);
-              console.log("Loctation: \n" + response.data[i].venue.city + ", " + response.data[i].venue.country);
-              console.log("Date: \n" + moment(response.data[i].datetime).format("L") + "\n"); // need to use moment.js
-              }
-          }
+        if (!response.data.length){
+            console.log("Sorry, No results...");
+            return;
+              };
+
+        for (var i=0; i<response.data.length; i++){
+
+            console.log("Venue: " + response.data[i].show.venue.name + "\n" +
+                        "Loctation: " + response.data[i].venue.city + ", " + response.data[i].venue.country + "\n" +
+                        "Date: " + moment(response.data[i].datetime).format("L") + "\n");
+              };
         }
     );
 };
@@ -55,7 +57,7 @@ function bandsInTown(mediaSubject){
 //Spotify
 //-----------------------------------------------------------------------
 
-function spotiftySearch(mediaSubject) {
+function spotifySearch(mediaSubject) {
 
   spotify.search({ type: 'track', query: mediaSubject, limit: 1 }, function(err, data) {
     if (err) {
@@ -74,7 +76,7 @@ function spotiftySearch(mediaSubject) {
 
 function omdb(mediaSubject){
 
-  if (mediaSubject === undefined){ 
+  if (mediaSubject === ""){ 
       var mediaSubject = "Mr. Nobody";
       console.log("mr. Nobody");
   };
@@ -96,21 +98,41 @@ function omdb(mediaSubject){
     );
 };
 
+//Do-what-it-says
+//-----------------------------------------------------------------------
+
+function doWhat() {
+      fs.readFile('random.txt','utf8', function(error, data){
+        console.log(data);
+
+        var dataArr = data.split(",");
+    
+        if (dataArr.length === 2) {
+          pick(dataArr[0], dataArr[1]);
+        } else if (dataArr.length === 1) {
+          pick(dataArr[0]);
+        }
+    });
+  };
+
 //Switch
 //-----------------------------------------------------------------------
 
 switch (expression) {
         case "song":
-          spotiftySearch(mediaSubject);
+          spotifySearch(mediaSubject);
           break;
         case "movie":
           omdb(mediaSubject);
           break;
-        case "concert":
+        case "concert": //< not functioning
           bandsInTown(mediaSubject);
           break;
+        case "do-what-it-says":
+          doWhat();
+          break;
         default:
-          console.log("\n Hi! Welcome to Liri. Search for music, concerts, and movies.");
-          console.log("To search simply type 'song', 'concert', or 'movie' followed by what your are looking for.");
-          console.log("Party On!");
+          console.log("\n Hi! Welcome to Liri. Search for music, concerts, and movies." + "\n" +
+                      "To search simply type 'song', 'concert', or 'movie' followed by what your are looking for."
+                      + "\n" +"Party On!");
 };
