@@ -2,7 +2,7 @@
 ## Welcome to Liri.
 
 ### Siri's cousin 
-___
+
 
 Ever need some info on a song you just heard? Has nostalgia ever hit and made you wonder if
 your favorite high school band was on tour? While at a bar have you ever needed to know the 
@@ -10,7 +10,7 @@ year Home Alone was release in theaters to win that bet with the guy who won't j
 Liri. Start her up, watch her go, and see what answers you can find.  
 
 ## Project's Requirements
-___
+
 
 This App is a Node server that makes calls to serveral APIs which then returns Song Info, Concert/Tour Information, and Movie Info. 
 
@@ -36,7 +36,7 @@ This App is a Node server that makes calls to serveral APIs which then returns S
     Using the fs Node package, LIRI takes a text file and then uses it to run a spotify search based on what is stated in the file.
 
 ## Technologies Used
-___
+
 Liri intagrates serval technologies to function. Included are:
 
 * Nodejs - JavaScript runtime built on Chrome's V8 JavaScript 
@@ -49,7 +49,7 @@ engine
 * Spotify API
 
 ## Explanation of Code
-___
+
 Liri is a node based server that uses client input to search various APIs. Each API is different with its own requirements.
 
 Main files:
