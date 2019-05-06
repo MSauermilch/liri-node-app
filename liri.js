@@ -22,7 +22,7 @@ var nodeArgs = process.argv;    // creates a string to use if search subject is 
 for (var i = 3; i < nodeArgs.length; i++) {
   if (i > 2 && i < nodeArgs.length) {
     mediaSubject = mediaSubject + " " + nodeArgs[i];
-    mediaSubject.trim();
+    mediaSubject = mediaSubject.trim();
   }
   else {
     mediaSubject += nodeArgs[i];
@@ -33,25 +33,28 @@ for (var i = 3; i < nodeArgs.length; i++) {
 //-----------------------------------------------------------------------
 
 function bandsInTown(mediaSubject){
-
   var queryUrl = "https://rest.bandsintown.com/artists/" + mediaSubject + "/events?app_id=codingbootcamp";
 
     axios.get(queryUrl).then(
       function (response){
 
         if (!response.data.length){
-            console.log("Sorry, No results...");
+            console.log("Sorry, Nothing turned up for " + mediaSubject);
             return;
-              };
-
+        }; 
+        
         for (var i=0; i<response.data.length; i++){
+          
+            var showInfo = response.data[i];
 
-            console.log("Venue: " + response.data[i].show.venue.name + "\n" +
-                        "Loctation: " + response.data[i].venue.city + ", " + response.data[i].venue.country + "\n" +
-                        "Date: " + moment(response.data[i].datetime).format("L") + "\n");
+            console.log("Venue: " + showInfo.venue.name + "\n" +
+                        "Loctation: " + showInfo.venue.city + ", " + showInfo.venue.country + "\n" +
+                        "Date: " + moment(showInfo.datetime).format("L") + "\n");
               };
         }
-    );
+    ).catch((err) => {
+      console.error(err);
+    });
 };
 
 //Spotify
@@ -85,15 +88,15 @@ function omdb(mediaSubject){
 
     axios.get(queryUrl).then(
       function(response) {
-        console.log("\n");
-        console.log("Title: " + response.data.Title);
-        console.log("Year: " + response.data.Year)
-        console.log("IMDB Rating: " + response.data.imdbRating);
-        console.log("Rotten Tomato's Rating: " + response.data.tomatoRating);
-        console.log("Produced in: " + response.data.Country);
-        console.log("Language: " + response.data.Language);
-        console.log("Plot: " + response.data.Plot);
-        console.log("Cast: " + response.data.Actors);
+        console.log("\n" +
+                    "Title: " + response.data.Title + "\n" +
+                    "Year: " + response.data.Year + "\n" +
+                    "IMDB Rating: " + response.data.imdbRating + "\n" +
+                    "Rotten Tomato's Rating: " + response.data.tomatoRating + "\n" +
+                    "Produced in: " + response.data.Country + "\n" +
+                    "Language: " + response.data.Language + "\n" +
+                    "Plot: " + response.data.Plot + "\n" +
+                    "Cast: " + response.data.Actors);
       }
     );
 };
@@ -101,19 +104,19 @@ function omdb(mediaSubject){
 //Do-what-it-says
 //-----------------------------------------------------------------------
 
-function doWhat() {
-      fs.readFile('random.txt','utf8', function(error, data){
-        console.log(data);
+// function doWhat() {
+//       fs.readFile('random.txt','utf8', function(error, data){
+//         console.log(data);
 
-        var dataArr = data.split(",");
+//         var dataArr = data.split(",");
     
-        if (dataArr.length === 2) {
-          pick(dataArr[0], dataArr[1]);
-        } else if (dataArr.length === 1) {
-          pick(dataArr[0]);
-        }
-    });
-  };
+//         if (dataArr.length === 2) {
+//           pick(dataArr[0], dataArr[1]);
+//         } else if (dataArr.length === 1) {
+//           pick(dataArr[0]);
+//         }
+//     });
+//   };
 
 //Switch
 //-----------------------------------------------------------------------
@@ -125,14 +128,20 @@ switch (expression) {
         case "movie":
           omdb(mediaSubject);
           break;
-        case "concert": //< not functioning
+        case "concert":
           bandsInTown(mediaSubject);
           break;
-        case "do-what-it-says":
-          doWhat();
-          break;
+        // case "do-what-it-says":
+        //   doWhat();
+        //   break;
         default:
-          console.log("\n Hi! Welcome to Liri. Search for music, concerts, and movies." + "\n" +
-                      "To search simply type 'song', 'concert', or 'movie' followed by what your are looking for."
-                      + "\n" +"Party On!");
+          console.log("\n" +
+                      "Hi! Welcome to Liri." + "\n" +
+                      "Search for music, concerts, and movies." + "\n\n" +
+                      "To search simply type: " + "\n" +
+                      "'song'     --- For information about songs your interested in."  + "\n" + 
+                      "'concert'  --- To see if there are any shows coming up you might be interested."  + "\n" +
+                      "'movie'    --- For movie information about a specific movie." + "\n\n" + 
+                      "Followed by the Name/subject related to your are looking for." + "\n" + 
+                      "Party On!");
 };
