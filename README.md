@@ -1,7 +1,7 @@
 
-## Welcome to Liri.
+# Welcome to Liri.
 
-### Siri's cousin 
+## Siri's cousin 
 
 Ever need some info on a song you just heard? Has nostalgia ever hit and made you wonder if
 your favorite high school band was on tour? While at a bar have you ever needed to know the 
@@ -12,34 +12,17 @@ Liri. Start her up, watch her go, and see what answers you can find.
 
 This App is a Node server that makes calls to serveral APIs which then returns Song Info, Concert/Tour Information, and Movie Info. 
 
-* "Bands in Town" returns the user requested band info logging up coming shows including the Venue's Name, Location, and Event Date.   
+* "Bands in Town" returns the user requested band info, logging the respones Venue's Name, Location, and Event Date.   
 
-* "Spotify" returns the user requested songs Artist's Name, Song Name, Preview Link, and Album of Song.
+* "Spotify" returns the user requested song's Artist's Name, Song Name, Preview Link, and Album of Song.
 
-    * The spotify Api requires a User Key which is passed into the app as an envorimental variable.
-
-* "OMDB" returns the user requested Movie's following information
-
-  * Title of the movie.
-  * Year the movie came out.
-  * IMDB Rating of the movie.
-  * Rotten Tomatoes Rating of the movie.
-  * Country where the movie was produced.
-  * Language of the movie.
-  * Plot of the movie.
-  * Actors in the movie.
-
-* Future Feature: "Do What It Says"
-
-    Using the fs Node package, LIRI takes a text file and then uses it to run a spotify search based on what is stated in the file.
+* "OMDB" returns the user requested Movie's Tilte, Year, IMDB, Rotten Tomatoes ratings, and a few others...
 
 ## Technologies Used
 Liri intagrates serval technologies to function. Included are:
 
 * Nodejs - JavaScript runtime built on Chrome's V8 JavaScript 
 engine
-
-    * Node fs provides an API to interact with the file system.
 
 * Axios - Promise based HTTP client for the browse
 * Momentjs - Parses, validates, manipulates, and displays dates and times in Javascript.
@@ -59,7 +42,7 @@ All of the meat and potatoes are located in the file:
 
     liri.js
 
-From here all the server functions are run. We have several dependences that load up. Axios makes our requests to Bands-in-town and OMDB while Spotify has its own api. To format some response data from bands-in-town we employ moment.js. Finally we are using Node's File System to grab our Key.js file and our Random txt file. 
+From here the server functions are run. We have several dependences that load up. Axios makes our requests to Bands-in-town and OMDB while Spotify has its own api. To format some response data from bands-in-town we employ moment.js. Currently we are attemping to use Node's File System to grab our Random txt file (which is corrently a future feature) to randomly search spotify. 
 
     var axios = require ("axios");
     var Spotify = require("node-spotify-api");
@@ -67,7 +50,7 @@ From here all the server functions are run. We have several dependences that loa
     var moment = require("moment");
     var spotify = new Spotify(keys.spotify);
 
-Since Spotify requires a key to make API requests we use two files to store and project our developement credentials. Variables for our Spotify keys are set up in the keys.js and by uing the dotenv module we pass our .env file in which contains our ID and serect key needed to make our requests.
+Since Spotify requires a key to make API requests we use two files to store and protect our developement credentials. Variables for our Spotify key are set up in the keys.js and using the dotenv module we pass our .env file in providing the data.
 
     keys.js
     .env
