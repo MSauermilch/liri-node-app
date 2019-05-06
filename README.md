@@ -56,3 +56,6 @@ Since Spotify requires a key to make API requests we use two files to store and 
     .env
 
 Well I hope that covers all the bases you might be interested in. Please feel free to copy this play around with it. You will need your get credientials from spotify to run the server properly. Party On!
+
+
+* Developer Note: Currently working of defaults for all the apis to call upon if no media is requested after a requested API. 
